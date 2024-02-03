@@ -1,0 +1,48 @@
+def build_planet_ships_hash_table(file_content):
+    """
+    Функция для построения хэш-таблицы, в которой ключом является название планеты,
+    а значением - список кораблей, улетевших с этой планеты.
+
+    :param file_content: Содержимое файла с данными о кораблях
+    :return: Хэш-таблица в виде словаря
+    """
+    planet_ships_hash_table = {}
+
+    # Разделение файла на строки и обработка каждой строки
+    for line in file_content.split('\n')[1:-1]:
+        ship_data = line.split('*')
+        ship_name = ship_data[0]
+        planet = ship_data[1]
+
+        # Добавление корабля в соответствующий список в хэш-таблице
+        if planet not in planet_ships_hash_table:
+            planet_ships_hash_table[planet] = [ship_name]
+        else:
+            planet_ships_hash_table[planet].append(ship_name)
+
+    return planet_ships_hash_table
+
+def print_ships_from_planet(planet_ships_hash_table, planet_name, num_ships=10):
+    """
+    Функция для вывода информации о кораблях, улетевших с заданной планеты.
+
+    :param planet_ships_hash_table: Хэш-таблица с данными о кораблях
+    :param planet_name: Название планеты
+    :param num_ships: Количество кораблей для вывода (по умолчанию 10)
+    """
+    # Получение списка кораблей для заданной планеты из хэш-таблицы
+    ships_from_planet = planet_ships_hash_table.get(planet_name, [])
+
+    # Вывод информации о кораблях
+    for i in range(min(num_ships, len(ships_from_planet))):
+        print(f"{planet_name}:{ships_from_planet[i]}")
+
+# Читаем данные из файла
+with open('space.txt', encoding='utf-8') as file:
+    file_content = file.read()
+
+# Строим хэш-таблицу с данными о кораблях
+planet_ships_hash_table = build_planet_ships_hash_table(file_content)
+
+# Выводим информацию о 10 кораблях с планеты "Голевард" (пример)
+print_ships_from_planet(planet_ships_hash_table, 'Голевард')
