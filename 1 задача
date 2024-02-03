@@ -1,0 +1,69 @@
+def fix_coordinates(ship_data):
+    """
+    Исправление координат последнего места связи в соответствии с предоставленной формулой.
+
+    :param ship_data: Данные о корабле (строка)
+    :return: Исправленные координаты в виде кортежа (X, Y)
+    """
+    ship_name = ship_data[0]
+    N = int(ship_name[3])
+    M = int(ship_name[4])
+    T = len(ship_data[1])
+
+    Xd, Yd = map(int, ship_data[4].split())
+
+    # Вычисление новых координат
+    if N > 5:
+        X = N + Xd
+    else:
+        X = -(N + Xd) * 4 + T
+
+    if M > 3:
+        Y = M + T + Yd
+    else:
+        Y = -(N + Yd) * M
+
+    return X, Y
+
+def process_and_output_ships(input_filename, output_filename):
+    """
+    Обработка файла space.txt, исправление координат и вывод кораблей с последним элементом кода "V".
+
+    :param input_filename: Имя входного файла
+    :param output_filename: Имя выходного файла
+    """
+    # Читаем данные из файла space.txt
+    with open(input_filename, encoding='utf-8') as file:
+        file_content = file.read().strip()
+
+    # Создаем список для хранения исправленных данных
+    corrected_data = []
+
+    # Разделение файла на строки и обработка каждой строки
+    for line in file_content.split('\n')[1:-1]:
+        ship_data = line.split('*')
+
+        # Исправление координат
+        X, Y = fix_coordinates(ship_data)
+
+        # Замена координат в исходных данных
+        ship_data[2] = f"{X} {Y}"
+
+        # Добавление данных в список
+        corrected_data.append(ship_data)
+
+    # Запись исправленных данных в новый файл space_new.txt
+    with open(output_filename, 'w', encoding='utf-8', newline='') as file:
+        # Записываем заголовок
+        file.write("ShipName*planet*coord_place*direction\n")
+        # Записываем исправленные данные
+        file.write('\n'.join('*'.join(data) for data in corrected_data))
+
+    # Выводим корабли с последним элементом кода "V"
+    for ship_data in corrected_data:
+        if ship_data[0][-1] == "V":
+            X, Y = fix_coordinates(ship_data)
+            print(f"{ship_data[0]} - ({X}, {Y})")
+
+# Вызываем функцию для обработки файла space.txt и вывода результатов в space_new.txt
+process_and_output_ships('space.txt', 'space_new.txt')
