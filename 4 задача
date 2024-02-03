@@ -1,0 +1,64 @@
+import csv
+
+def generate_password(planet, ship_code):
+    """
+    Генерация уникального пароля по заданным правилам.
+
+    :param planet: Название планеты
+    :param ship_code: Код корабля
+    :return: Уникальный пароль
+    """
+    # Берем 3 последние буквы названия планеты
+    planet_suffix = planet[-3:].upper()
+
+    # Берем 2 центральные буквы кода корабля в обратном порядке
+    ship_code_center = ship_code[len(ship_code)//2-1:len(ship_code)//2+1][::-1].upper()
+
+    # Берем 3 буквы названия планеты в обратном порядке
+    planet_reverse = planet[:3][::-1].upper()
+
+    # Собираем все части вместе
+    password = f"{planet_suffix}{ship_code_center}{planet_reverse}"
+
+    return password
+
+def process_space_file(input_filename, output_filename):
+    """
+    Обработка файла space.txt, генерация паролей и запись в новый файл.
+
+    :param input_filename: Имя входного файла
+    :param output_filename: Имя выходного файла
+    """
+    # Читаем данные из файла space.txt
+    with open(input_filename, encoding='utf-8') as file:
+        file_content = file.read().strip()
+
+    # Создаем список для хранения элементов сгенерированных паролей
+    data_with_password = []
+
+    # Разделение файла на строки и обработка каждой строки
+    for line in file_content.split('\n')[1:-1]:
+        ship_data = line.split('*')
+        ship_name = ship_data[0].strip()
+        planet = ship_data[1].strip()
+        ship_code = ship_name.split('-')[1].strip()
+
+        # Генерация пароля
+        password = generate_password(planet, ship_code)
+
+        # Добавление пароля к данным корабля
+        ship_data.append(password)
+
+        # Добавление данных корабля в список
+        data_with_password.append(ship_data)
+
+    # Запись данных с паролями в новый файл space_uniq_password.csv
+    with open(output_filename, 'w', encoding='utf-8', newline='') as csvfile:
+        csv_writer = csv.writer(csvfile, delimiter='*')
+        # Записываем заголовок
+        csv_writer.writerow(['ShipName', 'planet', 'coord_place', 'direction', 'password'])
+        # Записываем данные с паролями
+        csv_writer.writerows(data_with_password)
+
+# Вызываем функцию для обработки файла space.txt и записи результатов в space_uniq_password.csv
+process_space_file('space.txt', 'space_uniq_password.csv')
