@@ -1,0 +1,31 @@
+def find_ship_info(file_content, ship_name):
+    """
+    Функция для поиска информации о корабле по его названию.
+
+    :param file_content: Содержимое файла с данными о кораблях
+    :param ship_name: Название корабля для поиска
+    :return: Строка с информацией о корабле или сообщение об ошибке
+    """
+    # Разделение файла на строки и обработка каждой строки
+    for line in file_content.split('\n')[1:-1]:
+        ship_data = line.split('*')
+        current_ship_name = ship_data[0].strip()
+        
+        # Проверка, совпадает ли текущий корабль с искомым
+        if current_ship_name == ship_name:
+            planet = ship_data[1].strip()
+            direction = ship_data[4].strip()
+            return f"Корабль {ship_name} был отправлен с планеты: {planet} и его направление движения было: {direction}"
+
+    return "error.. er.. ror.."
+
+# Читаем данные из файла
+with open('space.txt', encoding='utf-8') as file:
+    file_content = file.read()
+
+# Ввод названия корабля
+ship_name_input = input("Введите название корабля: ")
+
+# Поиск и вывод информации о корабле
+result = find_ship_info(file_content, ship_name_input)
+print(result)
