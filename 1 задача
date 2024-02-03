@@ -1,0 +1,28 @@
+def bubble_sort_ships(ships):
+    n = len(ships)
+
+    # Проходим по всем элементам массива
+    for i in range(n):
+        # Последние i элементов уже отсортированы, поэтому не рассматриваем их
+        for j in range(0, n-i-1):
+            # Сравниваем элементы и меняем их местами, если нужно
+            if ships[j][0] > ships[j+1][0]:
+                ships[j], ships[j+1] = ships[j+1], ships[j]
+
+# Преобразуем данные в удобный формат
+def parse_data(file_content):
+    lines = file_content.split('\n')[1:-1]
+    ships = [line.split('*')[0] for line in lines]
+    return ships
+
+# Читаем данные из файла
+with open('space.txt', encoding='utf-8') as file:
+    file_content = file.read()
+
+# Парсим данные и применяем сортировку
+ships = parse_data(file_content)
+bubble_sort_ships(ships)
+
+# Выводим первые 10 отсортированных кораблей
+for i in range(10):
+    print(ships[i])
